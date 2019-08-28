@@ -46,6 +46,12 @@ users.statics.authenticateBasic = function(auth) {
     .catch(error => {throw error;});
 };
 
+users.statics.authenticateToken = function(token) {
+  const decrpytedToken = jwt.verify(token, process.env.SECRET || 'secret');
+  const query = {_id: decrpytedToken.id};
+  return this.findOne(query);
+};
+
 users.methods.comparePassword = function(password) {
   return bcrypt.compare( password, this.password )
     .then( valid => valid ? this : null);
