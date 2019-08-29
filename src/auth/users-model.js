@@ -47,8 +47,8 @@ users.statics.authenticateBasic = function(auth) {
 };
 
 users.statics.authenticateToken = function(token) {
-  const decrpytedToken = jwt.verify(token, process.env.SECRET || 'secret');
-  const query = {_id: decrpytedToken.id};
+  const decryptedToken = jwt.verify(token, process.env.SECRET || 'secret');
+  const query = {_id: decryptedToken.id};
   return this.findOne(query);
 };
 
@@ -63,8 +63,15 @@ users.methods.generateToken = function() {
     id: this._id,
     role: this.role,
   };
-  
-  return jwt.sign(token, process.env.SECRET);
+
+  let signOptions = {};
+
+  if (process.env.JWT_EXPIRES_IN) {
+    signOptions.expiresIn = process.env.JWT_EXPIRES_IN;
+  }
+
+  return jwt.sign(token, process.env.SECRET, signOptions);
+
 };
 
 module.exports = mongoose.model('users', users);
