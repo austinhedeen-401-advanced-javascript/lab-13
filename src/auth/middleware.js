@@ -2,6 +2,8 @@
 
 const User = require('./users-model.js');
 
+const tokenBlacklist = [];
+
 module.exports = (req, res, next) => {
   
   try {
@@ -34,6 +36,14 @@ module.exports = (req, res, next) => {
   }
 
   function _authBearer(token) {
+    if (process.env.JWT_USES === 'single') {
+      if (tokenBlacklist.includes(token)) {
+        next('Invalid Token');
+        return;
+      }
+      tokenBlacklist.push(token);
+    }
+
     return User.authenticateToken(token)
       .then(user => _authenticate(user))
       .catch(next);
