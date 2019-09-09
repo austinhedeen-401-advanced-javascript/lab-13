@@ -1,4 +1,7 @@
 'use strict';
+/**
+ * @module
+ */
 
 // 3rd Party Resources
 const express = require('express');
@@ -29,6 +32,10 @@ app.use(errorHandler);
 
 module.exports = {
   server: app,
+  /**
+   * Start Server on specified port
+   * @param {number} port
+   */
   start: (port) => {
     app.listen(port, () => {
       console.log(`Server Up on ${port}`);
