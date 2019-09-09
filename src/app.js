@@ -23,6 +23,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+// Static Routes
+app.use('/docs', express.static('docs'));
+
 // Routes
 app.use(authRouter);
 
