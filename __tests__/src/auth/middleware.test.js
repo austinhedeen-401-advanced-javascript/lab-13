@@ -51,7 +51,23 @@ describe('Auth Middleware', () => {
 
     }); // it()
 
-    it('logs in an admin user with the right credentials', () => {
+    it('fails a login for a user (admin) with the incorrect bearer token', () => {
+
+      let req = {
+        headers: {
+          authorization: 'Bearer incorrect',
+        },
+      };
+      let res = {};
+      let next = jest.fn();
+      let middleware = auth;
+
+      middleware(req, res, next);
+      expect(next).toHaveBeenCalledWith(expect.any(Object));
+
+    }); // it()
+
+    it('logs in an admin user with the right basic credentials', () => {
 
       let req = {
         headers: {
@@ -65,6 +81,24 @@ describe('Auth Middleware', () => {
       return middleware(req,res,next)
         .then( () => {
           cachedToken = req.token;
+          expect(next).toHaveBeenCalledWith();
+        });
+
+    }); // it()
+
+    it('logs in an admin user with the right bearer token', () => {
+
+      let req = {
+        headers: {
+          authorization: `Bearer ${cachedToken}`,
+        },
+      };
+      let res = {};
+      let next = jest.fn();
+      let middleware = auth;
+
+      return middleware(req, res, next)
+        .then(() => {
           expect(next).toHaveBeenCalledWith();
         });
 
